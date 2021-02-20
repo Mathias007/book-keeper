@@ -39,8 +39,10 @@ function validate(nameValue, urlValue) {
     return true;
 }
 
-// Build Bookmarks DOM
+// Build Bookmarks
 function buildBookmarks() {
+    // Remove all bookmark elements
+    bookmarksContainer.textContent = "";
     // Build items
     bookmarks.forEach((bookmark) => {
         const { name, url } = bookmark;
@@ -51,7 +53,7 @@ function buildBookmarks() {
         const closeIcon = document.createElement("i");
         closeIcon.classList.add("fas", "fa-times");
         closeIcon.setAttribute("title", "Delete Bookmark");
-        closeIcon.setAttribute("onclick", `deleteButton(${url})`);
+        closeIcon.setAttribute("onclick", `deleteBookmark('${url}')`);
         // Favicon / Link Container
         const linkInfo = document.createElement("div");
         linkInfo.classList.add("name");
@@ -70,7 +72,7 @@ function buildBookmarks() {
         // Append to bookmarks container
         linkInfo.append(favicon, link);
         item.append(closeIcon, linkInfo);
-        bookmarksContainer.append(item);
+        bookmarksContainer.appendChild(item);
     });
 }
 
@@ -90,6 +92,18 @@ function fetchBookmarks() {
         localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     }
     buildBookmarks();
+}
+
+// Delete Bookmark
+function deleteBookmark(url) {
+    bookmarks.forEach((bookmark, index) => {
+        if (bookmark.url === url) {
+            bookmarks.splice(index, 1);
+        }
+    });
+    // Update bookmarks array in localStorage, re-populate DOM
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    fetchBookmarks();
 }
 
 // Handle Data from Form
